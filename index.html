@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Interpreter</title>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.7/brython.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/lib/codemirror.css">
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/mode/python/python.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/addon/hint/show-hint.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/addon/hint/python-hint.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/addon/hint/show-hint.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #76c7c0;
+            margin-bottom: 20px;
+        }
+
+        .CodeMirror {
+            width: 90%;
+            height: 300px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #output {
+            width: 90%;
+            min-height: 150px;
+            background-color: #1e1e1e;
+            color: #76c7c0;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 16px;
+            padding: 10px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            background: linear-gradient(90deg, #76c7c0, #64b5f6);
+            color: #121212;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #64b5f6, #76c7c0);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body onload="brython()">
+    <h1>Python Interpreter</h1>
+    <textarea id="code" placeholder="Write your Python code here..."></textarea>
+    <button onclick="runPythonCode()">Run</button>
+    <div id="output">Output will appear here...</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                mode: "python",
+                theme: "default",
+                lineNumbers: true,
+                matchBrackets: true,
+                extraKeys: {
+                    "Tab": function(cm) {
+                        cm.replaceSelection("    ", "end");
+                    },
+                    "Ctrl-Space": "autocomplete"
+                }
+            });
+
+            window.runPythonCode = function () {
+                const code = editor.getValue();
+                const output = document.getElementById("output");
+                output.textContent = "";
+
+                try {
+                    // Execute the Python code directly via Brython
+                    const result = __BRYTHON__.python_to_js(code);
+                    eval(result);
+                } catch (e) {
+                    output.textContent = e.toString();
+                }
+            };
+        });
+    </script>
+</body>
+</html>
